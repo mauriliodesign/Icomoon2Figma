@@ -107,14 +107,6 @@
           </button>
         </div>
         <div class="export-section">
-          <button id="exportCSV" class="export-button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M14 3v4a1 1 0 001 1h4" stroke-width="2"/>
-              <path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" stroke-width="2"/>
-              <path d="M8 12h8M8 16h8" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Export CSV
-          </button>
           <button id="exportSelected" class="export-button" disabled>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path d="M14 3v4a1 1 0 001 1h4" stroke-width="2"/>
@@ -123,21 +115,20 @@
             </svg>
             Export Selected
           </button>
+          <button id="exportCSV" class="export-button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M14 3v4a1 1 0 001 1h4" stroke-width="2"/>
+              <path d="M17 21H7a2 2 0 01-2-2V5a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" stroke-width="2"/>
+              <path d="M8 12h8M8 16h8" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Export CSV
+          </button>
           <button id="exportTokens" class="export-button">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 16l-4-4h8l-4 4zm0 0V4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             Export for Tokens Studio
           </button>
-        </div>
-      </div>
-
-      <div class="selection-info" style="display: none;">
-        <div class="selection-text">
-          <span id="selectedCount">0</span> icons selected
-        </div>
-        <div class="selection-controls">
-          <button id="clearSelection" class="clear-button">Clear</button>
         </div>
       </div>
 
@@ -175,15 +166,12 @@
             <span class="icon-info-label">Unicode:</span>
             <span class="icon-info-value" id="modalIconUnicode"></span>
           </div>
-          <div class="icon-info-row">
-            <span class="icon-info-label">CSS Class:</span>
-            <span class="icon-info-value" id="modalIconClass"></span>
-          </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Toast element -->
   <div class="toast" id="toast"></div>
 
   <!-- Load modules with defer to ensure DOM is loaded -->

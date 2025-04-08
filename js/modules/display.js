@@ -188,7 +188,7 @@ function displayGridView(icons) {
       toggleIconSelection(name, item);
     });
 
-    // Add click handler for the entire item
+    // Add click handler for the entire item to show modal
     item.addEventListener('click', (e) => {
       if (!e.target.classList.contains('copy-button') && !e.target.classList.contains('icon-checkbox')) {
         showPreviewModal(icon);
@@ -252,8 +252,11 @@ function displayTableView(icons) {
 
     // Add click handler for copy button
     const copyButton = row.querySelector('.copy-button');
-    copyButton.addEventListener('click', () => {
-      copyToClipboard(unicodeChar, name);
+    copyButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const unicode = e.target.getAttribute('data-unicode');
+      const iconName = e.target.getAttribute('data-name');
+      copyToClipboard(unicode, iconName);
     });
 
     tbody.appendChild(row);
@@ -286,7 +289,6 @@ function showPreviewModal(icon) {
   const iconElement = modal.querySelector('.preview-icon .icon');
   const nameElement = document.getElementById('modalIconName');
   const unicodeElement = document.getElementById('modalIconUnicode');
-  const classElement = document.getElementById('modalIconClass');
   
   const unicodeChar = String.fromCharCode(icon.properties.code);
   const unicodeHex = icon.properties.code.toString(16).padStart(4, '0');
@@ -295,7 +297,6 @@ function showPreviewModal(icon) {
   iconElement.textContent = unicodeChar;
   nameElement.textContent = icon.properties.name;
   unicodeElement.textContent = `\\u${unicodeHex}`;
-  classElement.textContent = `.icon-${icon.properties.name}`;
   
   // Show modal
   modal.style.display = 'block';
