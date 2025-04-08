@@ -11,6 +11,12 @@ export function refreshDisplay(appState) {
   setCurrentIcons(currentIcons);
   filteredIcons = filterIcons(currentIcons);
   
+  // Show preview controls only if we have icons
+  const previewControls = document.querySelector('.preview-controls');
+  if (previewControls) {
+    previewControls.style.display = currentIcons.length > 0 ? 'flex' : 'none';
+  }
+  
   if (appState.currentView === 'grid') {
     displayGridView(filteredIcons);
   } else {

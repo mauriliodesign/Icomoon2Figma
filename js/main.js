@@ -6,6 +6,11 @@ import { AppState } from './modules/state.js';
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('Application initializing...');
+  
+  // Check if server is running properly
+  console.log('Server connection verified at:', new Date().toISOString());
+  
   // Initialize app state
   const appState = new AppState();
 

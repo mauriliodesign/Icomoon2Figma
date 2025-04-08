@@ -103,13 +103,23 @@ function unhighlight(element) {
 }
 
 function updateFileLoadedState(zone, file) {
+  // Adicionar a classe file-loaded ao zone
   zone.classList.add('file-loaded');
+  
+  // Configurar o estilo da borda
+  zone.style.borderColor = 'var(--primary)';
+  zone.style.borderStyle = 'solid';
+  
+  // Atualizar a exibição do nome do arquivo
   const fileInfo = zone.querySelector('.file-info');
   const fileName = zone.querySelector('.file-name');
   
   if (fileInfo && fileName) {
     fileName.textContent = file.name;
     fileInfo.style.display = 'flex';
+    console.log('File info updated:', file.name);
+  } else {
+    console.error('File info elements not found in zone:', zone.id);
   }
 }
 
@@ -131,7 +141,6 @@ function handleFileDelete(type, appState, zone, input) {
   if (type === 'json') {
     appState.currentIcons = [];
     document.getElementById('previewSection').style.display = 'none';
-    document.getElementById('exportSection').style.display = 'none';
     document.getElementById('outputTable').style.display = 'none';
   } else if (type === 'font') {
     appState.currentFont = null;
@@ -220,53 +229,62 @@ function handleJsonFile(file, appState, zone) {
     return;
   }
 
+  // Atualizar o estado visual do dropzone imediatamente
+  updateFileLoadedState(zone, file);
+
   const reader = new FileReader();
   
   reader.onload = function (e) {
     try {
-      const content = JSON.parse(e.target.result);
+      const data = JSON.parse(e.target.result);
       
-      if (!content || typeof content !== 'object') {
-        throw new Error('Invalid JSON structure');
-      }
-
-      const icons = content.icons || [];
-      console.log('Found icons:', icons.length);
-
-      if (icons.length === 0) {
-        showToast('No icons found in the file');
+      if (!data.icons || !Array.isArray(data.icons)) {
+        showToast('Invalid IcoMoon selection.json file');
+        // Reverter o estado visual em caso de erro
+        handleFileDelete('json', appState, zone, document.getElementById('fileInput'));
         return;
       }
-
-      const validIcons = icons.every(icon => 
-        icon && 
-        icon.properties && 
-        typeof icon.properties.name === 'string' &&
-        typeof icon.properties.code === 'number'
-      );
-
-      if (!validIcons) {
-        throw new Error('Invalid icon data structure');
-      }
-
-      appState.currentIcons = icons;
-      updateFileLoadedState(zone, file);
       
-      document.getElementById('previewSection').style.display = 'block';
-      document.getElementById('exportSection').style.display = 'flex';
-      showToast(`Successfully loaded ${icons.length} icons`);
+      // Process the icons data
+      appState.currentIcons = data.icons;
+      appState.fontName = data.preferences?.fontPref?.metadata?.fontFamily || 'icomoon';
+      
+      // Show the icons count
+      updateIconCount(data.icons.length);
+      
+      // Show preview section now that we have icons
+      const previewSection = document.getElementById('previewSection');
+      if (previewSection) {
+        previewSection.style.display = 'block';
+      }
+      
+      // Refresh the display with the loaded icons
       refreshDisplay(appState);
       
+      showToast(`Loaded ${data.icons.length} icons successfully`);
+      
     } catch (error) {
-      console.error('Error parsing JSON:', error);
-      showToast('Error parsing the file. Please ensure it\'s a valid selection.json');
+      console.error('Error processing JSON file:', error);
+      showToast('Error processing file. Please make sure it\'s a valid IcoMoon selection.json file.');
+      // Reverter o estado visual em caso de erro
+      handleFileDelete('json', appState, zone, document.getElementById('fileInput'));
     }
   };
 
   reader.onerror = function(error) {
     console.error('Error reading file:', error);
     showToast('Error reading the file');
+    // Reverter o estado visual em caso de erro
+    handleFileDelete('json', appState, zone, document.getElementById('fileInput'));
   };
 
   reader.readAsText(file);
+}
+
+// Update the icon counter display
+function updateIconCount(count) {
+  const iconCounter = document.getElementById('iconCount');
+  if (iconCounter) {
+    iconCounter.textContent = count;
+  }
 } 
